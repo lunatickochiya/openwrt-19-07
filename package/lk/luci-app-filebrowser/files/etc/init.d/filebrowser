@@ -1,0 +1,35 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2019 kochiya OpenWRT
+
+START=91
+STOP=10
+
+start() {
+	config_load  filebrowser
+	enabled=$(uci get filebrowser.config.enabled)
+	port=$(uci get filebrowser.config.port)
+	file_dir=$(uci get filebrowser.config.file_dir)
+	root_dir=$(uci get filebrowser.config.root_dir)
+	db_dir=$(uci get filebrowser.config.db_dir)
+	db_name=$(uci get filebrowser.config.db_name)
+	password=$(cd $file_dir&& ./filebrowser hash "$(uci get filebrowser.config.password)" | sed 's/$/\$/g')
+	username=$(uci get filebrowser.config.username)
+	addr_type=$(uci get filebrowser.config.addr_type)
+	if [ "${addr_type}" == "local" ];then
+	addr=127.0.0.1
+elif [ "${addr_type}" == "lan" ];then
+	addr=$(uci get network.lan.ipaddr)
+elif [ "${addr_type}" == "wan" ];then
+	addr=0.0.0.0
+fi
+
+	[ "$enabled" == "1" ] || return
+	mkdir -p $root_dir
+	mkdir -p $db_dir
+	cd $file_dir&& ./filebrowser --address $addr --port $port --root $root_dir --database .$db_dir/$db_name  --username $username --password $password  >/dev/null 2>/dev/null &
+
+}
+
+stop() {
+        killall filebrowser >/dev/null 2>/dev/null &
+}

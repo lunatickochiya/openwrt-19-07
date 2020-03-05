@@ -1,0 +1,44 @@
+#!/bin/sh /etc/rc.common
+
+echo "$$" > /var/run/wifi_schedule.pid
+
+#mkdir -p /var/wifi_schedule
+#cp /etc/config/wifi_schedule /var/wifi_schedule
+
+
+while [ 1 ] ; do
+	let "n = `uci show wifi_schedule  |grep "\.ssid" |wc -l` -1"
+
+	for i in $( seq 0 $n )
+	do
+		ssid=$(uci get wifi_schedule.@device[$i].ssid)
+		schedule=$(uci get wifi_schedule.@device[$i].list)
+
+		day_hour=$(date +"%u_%H"| tr -d ' ' |sed 's/_0/_/g')
+		enabledoncurrenthour="x$(uci get wifi_schedule.${schedule}.`echo $day_hour`)"
+		wifidevce=$(uci show wireless |grep "$ssid" |awk -F [.] '{print $2}')
+		status=$(uci get wireless."$wifidevce".disabled)
+
+		if [ $enabledoncurrenthour == "x1" ]; then
+			if [ "$status" = "1" ]; 	then
+				logger "wifi_schedule: wifi is enabled $day_hour and wifi is off, turn on"
+				uci del wireless."$wifidevce".disabled
+				uci commit wireless && /sbin/wifi
+			fi
+		else
+			if [ "$status" != "1" ]; then
+				logger "wifi_schedule: wifi is disabled $day_hour and wifi is on, turn off"
+				uci set wireless."$wifidevce".disabled=1
+				uci commit wireless &&  /sbin/wifi
+			fi
+		fi
+	done
+	timetosleep=$(uci get wifi_schedule.config.interval)
+	if [ $timetosleep -lt 30 ] || [ $timetosleep == "" ]
+	then
+		timetosleep=30
+	fi
+	sleep $timetosleep
+done
+
+

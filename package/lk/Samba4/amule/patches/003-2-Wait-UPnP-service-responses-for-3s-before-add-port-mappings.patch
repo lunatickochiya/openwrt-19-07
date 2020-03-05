@@ -1,0 +1,26 @@
+From 31767062329455eef85caf6712fa1c1c3642936d Mon Sep 17 00:00:00 2001
+From: xinhuang <xinhuang.abc@gmail.com>
+Date: Fri, 29 Dec 2017 13:09:55 -0800
+Subject: [PATCH] Wait UPnP service responses for 3s before add port mappings
+
+---
+ src/amule.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/amule.cpp b/src/amule.cpp
+index fcb984e85..e5182d807 100644
+--- a/src/amule.cpp
++++ b/src/amule.cpp
+@@ -816,6 +816,12 @@ bool CamuleApp::ReinitializeNetwork(wxString* msg)
+ 				thePrefs::GetUPnPEnabled(),
+ 				"aMule UDP Extended eMule Socket");
+ 			m_upnp = new CUPnPControlPoint(thePrefs::GetUPnPTCPPort());
++
++			int count = 0;
++			while (count < 3 && !m_upnp->WanServiceDetected()) {
++				sleep(1);
++				count += 1;
++			}
+ 			m_upnp->AddPortMappings(m_upnpMappings);
+ 		} catch(CUPnPException &e) {
+ 			wxString error_msg;

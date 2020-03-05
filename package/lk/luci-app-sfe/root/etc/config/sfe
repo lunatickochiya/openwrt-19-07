@@ -1,0 +1,10 @@
+
+config sfe 'config'
+	option enabled '1'
+	option ipv6 '0'
+	option wifi '0'
+	option bbr_mod '0'
+	option bbr_bbrplus '0'
+	option bbr_nanqinlang '0'
+	option bbr_tsunami '0'
+

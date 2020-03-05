@@ -1,0 +1,11 @@
+[global]
+	server string = CIFSD on OpenWrt
+	ipc timeout = 8
+	map to guest = Bad User
+
+[share]
+	path = /mnt
+	writeable = yes
+	guest ok = yes
+	create mask = 0777
+	directory mask = 0777

@@ -1,0 +1,36 @@
+#!/bin/sh /etc/rc.common
+
+START=20
+STOP=10
+
+board_name=`cat /tmp/sysinfo/board_name`
+nand_flash_dev=`mtd7`
+
+ubi_check_dev () {
+    hexdump -C /dev/$nand_flash_dev -n 8 2>/dev/null | grep -q 'UBI#' 2>/dev/null
+    local is_ubi=$?
+    grep -q ubifs /proc/mounts
+    local is_mounted=$?
+    if [ ! $is_ubi -eq 0 ] || [ ! $is_mounted -eq 0 ]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+ubi_init_flash () {
+    ubiformat -q -y /dev/$nand_flash_dev -s 2048 && \
+        ubiattach /dev/ubi_ctrl -p /dev/$nand_flash_dev && \
+        ubimkvol /dev/ubi0 -N rootfs_data -s 90MiB && \
+        sync
+}
+
+start () {
+    [ $board_name == "dw33d" ] || return 0
+
+    ret=$(ubi_check_dev)
+    if [ ! $ret == "0" ]; then
+        ubi_init_flash
+        reboot
+    fi
+} 

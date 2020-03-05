@@ -1,0 +1,10 @@
+ *** Warnings during configuration ***
+
+* Cross-compilation detected, so exception handling cannot be tested.
+  Note that broken exception handling in your compiler may lead to unexpected
+  crashes.
+
+* configure cannot check whether malloc() and realloc() are GNU libc
+  compatible. You have to be ABSOLUTELY sure that they are, otherwise run
+  configure with the --without-gnu-malloc switch.
+ 

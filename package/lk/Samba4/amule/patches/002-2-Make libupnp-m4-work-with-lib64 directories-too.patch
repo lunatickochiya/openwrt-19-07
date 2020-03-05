@@ -1,0 +1,34 @@
+From 9ee7158249a957891c0e115faa88ced05f77bf38 Mon Sep 17 00:00:00 2001
+From: Marcelo Roberto Jimenez <marcelo.jimenez@gmail.com>
+Date: Wed, 3 Oct 2018 14:24:28 -0300
+Subject: [PATCH] Make libupnp.m4 work with lib64 directories too
+
+---
+ m4/libupnp.m4 | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/m4/libupnp.m4 b/m4/libupnp.m4
+index f340a4da9..a9e08dbc9 100644
+--- a/m4/libupnp.m4
++++ b/m4/libupnp.m4
+@@ -45,11 +45,16 @@ m4_define([MIN_LIBUPNP_VERSION], [m4_ifval([$1], [$1], [1.6.6])])dnl
+ 
+ dnl	Test for --with-libupnp-prefix
+ 	AC_ARG_WITH(
+-		[libupnp-prefix],
+-		[AS_HELP_STRING(
++		[libupnp-prefix],[
++		AS_HELP_STRING(
+ 			[--with-libupnp-prefix=PREFIX],
+-			[UPnP library location])],
+-		[export PKG_CONFIG_PATH=$withval/lib/pkgconfig])
++			[UPnP library location])],[
++		AS_IF([test -d "$withval/lib64/pkgconfig"],[
++			export PKG_CONFIG_PATH=$withval/lib64/pkgconfig
++		],[
++			export PKG_CONFIG_PATH=$withval/lib/pkgconfig
++		])
++	])
+ 
+ dnl	Check for libupnp >= MIN_LIBUPNP_VERSION
+ 	AS_IF([test $cross_compiling = no], [
