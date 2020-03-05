@@ -16,7 +16,6 @@
 /overlay
 /package/feeds
 /package/openwrt-packages
-/*.patch
 key-build*
 *.orig
 *.rej
@@ -26,5 +25,9 @@ key-build*
 .emacs.desktop*
 TAGS*~
 git-src
-.project
-.cproject
+.git-credentials
+*.tar.gz
+.directory
+/*.patch
+/.config*
+*.kate-swp
