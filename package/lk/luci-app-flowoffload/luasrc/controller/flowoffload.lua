@@ -29,8 +29,7 @@ function action_status()
 	luci.http.write_json({
 		run_state = is_running(),
 		down_state = is_bbr(),
-		up_state = is_fullcone(),
-		dns_state = is_dns()
+		up_state = is_fullcone()
 	})
 end
 
