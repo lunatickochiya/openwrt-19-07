@@ -83,6 +83,7 @@
 		reg = <0>;
 		spi-max-frequency = <80000000>;
 		m25p,fast-read;
+		m25p,chunked-io = <32>;
 
 		partitions {
 			compatible = "fixed-partitions";
