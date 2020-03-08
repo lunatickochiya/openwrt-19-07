@@ -2,12 +2,9 @@
 # Copyright (c) 2011-2015 OpenWrt.org
 
 START=90
-
 USE_PROCD=1
 
-
 start_service(){
-  dns=$(uci get flowoffload.@flow[0].dns 2>/dev/null)
   bbr=$(uci get flowoffload.@flow[0].bbr 2>/dev/null)
   if [ $bbr -eq 1 ];  then
     sysctl -w net.ipv4.tcp_congestion_control=bbr
@@ -17,14 +14,14 @@ start_service(){
   uci set firewall.@defaults[0].flow_offloading=$(uci get flowoffload.@flow[0].flow_offloading)
   uci set firewall.@defaults[0].flow_offloading_hw=$(uci get flowoffload.@flow[0].flow_offloading_hw)
   uci commit firewall
+  /etc/init.d/firewall restart
 }
 
 stop_service(){
-    dns=$(uci get firewall.@defaults[0].dns 2>/dev/null)
-    revert_dns
     uci set firewall.@defaults[0].flow_offloading=$(uci get flowoffload.@flow[0].flow_offloading)
     uci set firewall.@defaults[0].flow_offloading_hw=$(uci get flowoffload.@flow[0].flow_offloading_hw)
     uci commit firewall
+    /etc/init.d/firewall restart
 }
 
 restart(){
