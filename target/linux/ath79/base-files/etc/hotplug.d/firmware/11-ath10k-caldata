@@ -96,6 +96,10 @@ case "$FIRMWARE" in
 		ath10kcal_extract "art" 20480 2116
 		ath10kcal_patch_mac_crc $(macaddr_add $(mtd_get_mac_binary art 0) -1)
 		;;
+	domywifi,dw33d)
+		caldata_extract "art" 0x5000 0x844
+		ath10k_patch_mac $(mtd_get_mac_binary art 0x12)
+		;;
 	dlink,dir-859-a1)
 		ath10kcal_extract "art" 20480 2116
 		ath10kcal_patch_mac $(mtd_get_mac_ascii devdata "wlan5mac")
