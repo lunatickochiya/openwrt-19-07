@@ -136,8 +136,6 @@
 
 &wmac {
 	ralink,mtd-eeprom = <&factory 0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pa_pins>;
 };
 
 &pcie {
@@ -157,6 +155,11 @@
 		gpio {
 			ralink,group = "i2c", "rgmii1";
 			ralink,function = "gpio";
+		};
+
+		pa {
+			ralink,group = "pa";
+			ralink,function = "pa";
 		};
 	};
 };

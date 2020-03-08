@@ -96,8 +96,6 @@
 
 &wmac {
 	ralink,mtd-eeprom = <&factory 0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pa_pins>;
 };
 
 &pinctrl {
@@ -105,6 +103,11 @@
 		gpio {
 			ralink,group = "uartf", "wled", "nd_sd";
 			ralink,function = "gpio";
+		};
+
+		pa {
+			ralink,group = "pa";
+			ralink,function = "pa";
 		};
 	};
 };
